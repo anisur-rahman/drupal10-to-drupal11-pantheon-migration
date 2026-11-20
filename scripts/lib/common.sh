@@ -1,5 +1,6 @@
-# shellcheck shell=bash
+# shellcheck shell=bash disable=SC2034
 # Shared helpers for the migration scripts. Source this file; do not execute it.
+# SC2034 disabled: variables here are used by the scripts that source this file.
 # Compatible with bash 3.2 (macOS default) and later.
 
 PASS_COUNT=0

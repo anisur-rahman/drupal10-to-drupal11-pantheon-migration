@@ -6,7 +6,7 @@
 # Usage: scripts/pantheon-health-check.sh SITE [ENV]   (ENV defaults to dev)
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=lib/common.sh
+# shellcheck source=scripts/lib/common.sh
 source "$SCRIPT_DIR/lib/common.sh"
 
 case "${1:-}" in -h|--help|'') sed -n '2,6p' "$0"; [[ -n "${1:-}" ]]; exit $? ;; esac
