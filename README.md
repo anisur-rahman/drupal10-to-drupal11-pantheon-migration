@@ -30,6 +30,55 @@ flowchart TD
 3. **Rehearse the cutover.** The final run repeats the timed Test rehearsal with fresh data.
 4. **Rollback is a data operation.** Freeze, preserve and reconcile happen before DNS moves back.
 
+## Repository structure
+
+```
+drupal10-to-drupal11-pantheon-migration/
+│
+├── README.md                          # Overview, architecture, 33-step index (this file)
+├── LICENSE                            # MIT
+├── .gitignore                         # Blocks dumps, archives, keys, .env, vendor/
+│
+├── docs/                              # Step-by-step procedures
+│   ├── 01-discovery.md                # Steps 1–4    access, inventory, Drupal 11 blockers
+│   ├── 02-backup-local-setup.md       # Steps 5–6    checksummed backup, DDEV restore
+│   ├── 03-drupal11-upgrade.md         # Steps 7–12   Composer upgrade, updatedb, release candidate
+│   ├── 04-pantheon-setup.md           # Steps 13–18  site, pantheon.yml, scaffold merge, build
+│   ├── 05-database-files-migration.md # Steps 19–22  signed-URL imports, private files
+│   ├── 06-testing-qa.md               # Steps 23–25  Test deploy, rehearsal, sign-off
+│   ├── 07-production-cutover.md       # Steps 26–31  freeze, final upgrade, Live, DNS
+│   ├── 08-monitoring-rollback.md      # Steps 32–33  hypercare, data-safe rollback
+│   ├── 09-demo-lab.md                 # Hands-on practice on a throwaway site
+│   └── 10-troubleshooting.md          # Symptom → diagnosis → fix tables
+│
+├── scripts/                           # Bash tools (PASS/WARN/FAIL output, --help)
+│   ├── lib/
+│   │   └── common.sh                  # Shared helpers, Drush/Composer detection
+│   ├── check-requirements.sh          # Workstation prerequisites
+│   ├── drupal11-readiness.sh          # Pre-upgrade audit of a Drupal 10 site
+│   ├── backup-drupal.sh               # DB + files + manifest + SHA-256
+│   ├── verify-upgrade.sh              # Post-upgrade verification
+│   ├── reconcile-counts.sh            # Capture / compare content counts
+│   ├── smoke-test.sh                  # HTTP checks
+│   ├── pantheon-health-check.sh       # Pantheon environment health
+│   └── pantheon-import.sh             # Guarded DB/files import (destructive)
+│
+├── checklists/
+│   ├── pre-migration.md
+│   ├── qa-acceptance.md
+│   ├── production-cutover.md
+│   └── rollback.md
+│
+├── examples/
+│   ├── pantheon.yml                   # PHP 8.3, MariaDB 10.6
+│   ├── environment.example            # Shell variables used in the runbook
+│   └── smoke-paths.example            # Paths file for smoke-test.sh
+│
+└── .github/
+    └── workflows/
+        └── validate-docs.yml          # bash -n, ShellCheck, links, all-33-steps check
+```
+
 ## The 33 steps
 
 | Phase | Steps | What happens | Doc |
@@ -76,16 +125,6 @@ DRUSH="ddev drush" COMPOSER_CMD="ddev composer" /path/to/this/repo/scripts/drupa
 ```
 
 New to the flow? Start with the [demo lab](docs/09-demo-lab.md). It builds a Drupal 10 site with a deliberate Drupal 11 blocker and walks through fixing it.
-
-## Repository layout
-
-```
-docs/          10 phase documents (Steps 1–33, demo lab, troubleshooting)
-scripts/       verification, backup, reconciliation and import tools (+ lib/common.sh)
-checklists/    pre-migration, QA acceptance, production cutover, rollback
-examples/      pantheon.yml, environment variables, smoke-test paths
-.github/       CI: bash -n, ShellCheck, link check, all-33-steps check
-```
 
 ## Safety
 
