@@ -1,5 +1,16 @@
-# Example only; preserve upstream platform settings.
+# Site-specific Pantheon configuration (commit at the repository root as pantheon.yml).
+# It is merged over pantheon.upstream.yml, which the Drupal Composer-managed upstream
+# provides and which already sets build_step: true (Integrated Composer) and web_docroot.
+# Reference: https://docs.pantheon.io/pantheon-yml
 api_version: 1
-web_docroot: true
-build_step: true
+
+# Drupal 11 requires PHP 8.3+.
 php_version: 8.3
+
+# Drupal 11 requires MariaDB 10.6+. Changing this triggers a database upgrade workflow.
+database:
+  version: 10.6
+
+# Optional: block web access to paths that should never be served.
+protected_web_paths:
+  - /private/

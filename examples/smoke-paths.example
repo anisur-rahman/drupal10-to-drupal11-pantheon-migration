@@ -1,0 +1,13 @@
+# Paths for scripts/smoke-test.sh
+# Format: <path> <expected HTTP status> [text that must appear in the response]
+# A random missing-page 404 check and the HTTP->HTTPS redirect check are always added.
+
+/                       200
+/user/login             200   user-login-form
+/robots.txt             200   User-agent
+# /sitemap.xml          200     (only if a sitemap module is installed)
+/contact                200
+/admin                  403
+# Add your site's critical pages, for example:
+# /services               200   Our services
+# /news                   200

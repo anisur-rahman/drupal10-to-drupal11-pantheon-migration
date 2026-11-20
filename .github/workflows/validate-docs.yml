@@ -2,15 +2,59 @@ name: Validate docs and scripts
 on:
   push:
   pull_request:
+
 jobs:
-  validate:
+  scripts:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Bash syntax check
         run: |
-          for file in scripts/*.sh; do bash -n "$file"; done
-      - name: Check expected docs
+          for file in scripts/*.sh scripts/lib/*.sh; do bash -n "$file"; done
+      - name: ShellCheck
+        run: shellcheck -x scripts/*.sh scripts/lib/*.sh
+      - name: Scripts are executable
         run: |
-          test -f README.md
-          test -f docs/08-monitoring-rollback.md
+          for file in scripts/*.sh; do test -x "$file" || { echo "$file is not executable"; exit 1; }; done
+      - name: Help output works
+        run: |
+          for file in scripts/*.sh; do "$file" --help >/dev/null; done
+      - name: Reconcile compare self-test
+        run: |
+          printf 'node:article\t5\nuser:total\t3\n' > a.tsv
+          cp a.tsv b.tsv
+          scripts/reconcile-counts.sh --compare a.tsv b.tsv
+          printf 'node:article\t6\nuser:total\t3\n' > b.tsv
+          if scripts/reconcile-counts.sh --compare a.tsv b.tsv; then echo "expected a difference"; exit 1; fi
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Expected files exist
+        run: |
+          for f in README.md LICENSE docs/0{1..9}-*.md docs/10-troubleshooting.md \
+                   checklists/{pre-migration,qa-acceptance,production-cutover,rollback}.md \
+                   examples/pantheon.yml examples/environment.example examples/smoke-paths.example; do
+            ls $f >/dev/null || exit 1
+          done
+      - name: All 33 steps documented
+        run: |
+          for n in $(seq 1 33); do
+            grep -qE "^## Step $n — " docs/*.md || { echo "Step $n missing"; exit 1; }
+          done
+      - name: Relative links resolve
+        run: |
+          status=0
+          for file in README.md docs/*.md checklists/*.md; do
+            dir="$(dirname "$file")"
+            for link in $(grep -oE '\]\([^)#]+' "$file" | sed 's/](//' | grep -vE '^(https?:|mailto:)'); do
+              [ -e "$dir/$link" ] || { echo "$file -> $link (missing)"; status=1; }
+            done
+          done
+          exit $status
+      - name: No placeholder step text
+        run: |
+          ! grep -rn "Follow the commands and verify the expected result" docs/
+      - name: YAML parses
+        run: python3 -c "import yaml,sys; [yaml.safe_load(open(f)) for f in sys.argv[1:]]" examples/pantheon.yml .github/workflows/*.yml

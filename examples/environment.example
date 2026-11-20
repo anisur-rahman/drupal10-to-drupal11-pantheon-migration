@@ -1,5 +1,28 @@
-# Example placeholders. Do not commit real values.
+# Example shell variables used throughout the runbook.
+# Copy to a file outside Git (or export in your shell) and fill in your values:
+#   cp examples/environment.example ~/.migration.env && source ~/.migration.env
+# All values below are fictional placeholders. Never commit real values.
+
+# Pantheon
 SITE=drupal11-migration-demo
-SOURCE_DOMAIN=www.example.gov
+ORG="Agency Web Team"
 PANTHEON_ENV=dev
-# Set protected temporary import URLs in the shell, not in this file.
+
+# Production hostnames (fictional; .example is a reserved TLD)
+PRIMARY_DOMAIN=www.agency.example
+BARE_DOMAIN=agency.example
+
+# Release-candidate commit approved in Step 12
+RC_COMMIT=0000000
+
+# How the scripts call Drush and Composer
+DRUSH="ddev drush"
+COMPOSER_CMD="ddev composer"
+
+# Backups live outside every Git repository
+BACKUP_DIR="$HOME/projects/backups"
+
+export SITE ORG PANTHEON_ENV PRIMARY_DOMAIN BARE_DOMAIN RC_COMMIT DRUSH COMPOSER_CMD BACKUP_DIR
+
+# Set these only in your shell at import time (short-lived signed URLs, never stored):
+#   DB_URL, FILES_URL, FINAL_DB_URL, FINAL_FILES_URL, PANTHEON_MACHINE_TOKEN
