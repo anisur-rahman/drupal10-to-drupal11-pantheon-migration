@@ -1,0 +1,12 @@
+# QA acceptance checklist
+- [ ] Drupal 11 status and no pending DB updates
+- [ ] Homepage, internal pages and admin login
+- [ ] Users, roles and permissions
+- [ ] Forms and email notifications
+- [ ] Custom modules and themes
+- [ ] Files, media, private downloads
+- [ ] Search, redirects and canonical URLs
+- [ ] External integrations, cron and queues
+- [ ] Accessibility, security and performance
+- [ ] Source/target content reconciliation
+- [ ] Business owner approval

@@ -1,0 +1,16 @@
+name: Validate docs and scripts
+on:
+  push:
+  pull_request:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bash syntax check
+        run: |
+          for file in scripts/*.sh; do bash -n "$file"; done
+      - name: Check expected docs
+        run: |
+          test -f README.md
+          test -f docs/08-monitoring-rollback.md

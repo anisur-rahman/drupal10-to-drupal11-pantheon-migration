@@ -1,0 +1,5 @@
+# Example placeholders. Do not commit real values.
+SITE=drupal11-migration-demo
+SOURCE_DOMAIN=www.example.gov
+PANTHEON_ENV=dev
+# Set protected temporary import URLs in the shell, not in this file.
